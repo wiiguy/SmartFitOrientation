@@ -1,0 +1,15 @@
+SmartFit Orientation
+===================
+
+This plugin is licensed under the GNU Lesser General Public License v3.0 (LGPL-3.0).
+A copy of the license is included in the file LICENSE.
+
+Copyright and attribution
+-------------------------
+- Copyright (c) 2022 Jaime van Kessel (original Cura orientation plugin).
+- MeshTweaker / STL-Tweaker algorithm by Christoph Schranz (https://github.com/ChristophSchranz/Tweaker-3).
+- Based on CuraOrientationPlugin by nallath (https://github.com/nallath/CuraOrientationPlugin), which was forked from iot-salzburg/STL-tweaker.
+
+This is a modified version. Modifications (SmartFit extensions) by SighClock: build-volume-aware orientation checks, in-plane spin optimisation, drop-to-build-plate, and centring on the build plate.
+
+You may convey this work under the terms of the LGPL-3.0. When distributing, you must preserve this NOTICE and the LICENSE file.

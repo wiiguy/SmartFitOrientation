@@ -1,0 +1,9 @@
+{
+  "name": "SmartFit Orientation",
+  "package_id": "smartfit_orientation",
+  "author": "Jaime van Kessel, SighClock (SmartFit extensions)",
+  "version": "3.7.2",
+  "api": 5,
+  "description": "Automatically orients models for optimal FDM printing while ensuring they fit within the printer's build volume. Based on CuraOrientationPlugin (nallath), MeshTweaker by Christoph Schranz, originally by Jaime van Kessel.",
+  "supported_sdk_versions": ["5.0.0", "6.0.0", "7.0.0", "8.0.0"]
+}
