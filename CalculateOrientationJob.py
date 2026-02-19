@@ -50,7 +50,12 @@ class CalculateOrientationJob(Job):
         for node in self._nodes:
             transformed_vertices = node.getMeshDataTransformed().getVertices()
 
-            result = Tweak(transformed_vertices, extended_mode = self._extended_mode, verbose=False, progress_callback=self.updateProgress, min_volume=CuraApplication.getInstance().getPreferences().getValue("SmartFitOrientation/min_volume"), build_volume=build_volume)
+            prefs = CuraApplication.getInstance().getPreferences()
+            min_vol_val = prefs.getValue("SmartFitOrientation/min_volume")
+            min_volume = str(min_vol_val).lower() != "false" if min_vol_val is not None else True
+            fast_fit_val = prefs.getValue("SmartFitOrientation/fast_fit_check")
+            fast_fit_check = str(fast_fit_val).lower() != "false" if fast_fit_val is not None else True
+            result = Tweak(transformed_vertices, extended_mode=self._extended_mode, verbose=False, progress_callback=self.updateProgress, min_volume=min_volume, build_volume=build_volume, fast_fit_check=fast_fit_check)
 
             [v, phi] = result.euler_parameter
 

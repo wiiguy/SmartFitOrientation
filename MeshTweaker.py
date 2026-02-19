@@ -86,7 +86,8 @@ class Tweak:
     """
 
     def __init__(self, content, extended_mode=False, verbose=True, show_progress=False,
-                 favside=None, min_volume=False, parameter=None, progress_callback=None, build_volume=None):
+                 favside=None, min_volume=False, parameter=None, progress_callback=None, build_volume=None,
+                 fast_fit_check=True):
         # Load parameters
         if parameter is None:
             if min_volume:
@@ -106,6 +107,7 @@ class Tweak:
         self.extended_mode = extended_mode
         self.show_progress = show_progress
         self.build_volume = build_volume
+        self.fast_fit_check = fast_fit_check
         z_axis = -np.array([0, 0, 1], dtype=np.float64)
         orientations = [[z_axis, 0.0]]
 
@@ -271,10 +273,7 @@ class Tweak:
         bf_min = min(bw, bd)
         bf_max = max(bw, bd)
 
-        # Sweep 0–179.5° in 0.5° steps to find the best in-plane rotation.
-        # We keep going even after finding a fitting angle so we can return the
-        # angle that gives the MOST clearance (smallest max footprint), not just
-        # the first angle that technically fits.
+        # User choice: fast (5° steps + early exit) or precise (0.5° full sweep). Exact angle found later in spin search.
         fits = False
         best_fp_max = float('inf')
         best_fp_min = float('inf')
@@ -282,9 +281,18 @@ class Tweak:
         best_fit_fp_max = float('inf')
         best_fit_fp_min = float('inf')
         best_fit_angle  = 0.0
+        if getattr(self, 'fast_fit_check', True):
+            step_deg = 5.0
+            n_steps = int(180.0 / step_deg)
+            early_exit = True
+        else:
+            step_deg = 0.5
+            n_steps = 360
+            early_exit = False
 
-        for step in range(360):          # 0.0°, 0.5°, 1.0°, … 179.5°
-            a  = math.radians(step * 0.5)
+        for step in range(n_steps):
+            deg = step * step_deg
+            a  = math.radians(deg)
             ca = math.cos(a)
             sa = math.sin(a)
             ru = ca * pu - sa * pw
@@ -293,18 +301,18 @@ class Tweak:
             ew = float(np.max(rw) - np.min(rw))
             fp_min = min(eu, ew)
             fp_max = max(eu, ew)
-            # Track overall best footprint (for logging even when nothing fits)
             if fp_max < best_fp_max or (fp_max == best_fp_max and fp_min < best_fp_min):
                 best_fp_max = fp_max
                 best_fp_min = fp_min
-                best_angle  = step * 0.5
-            # Track best angle that fits (smallest max-footprint among fitting angles)
+                best_angle  = deg
             if fp_min <= bf_min and fp_max <= bf_max:
                 fits = True
                 if fp_max < best_fit_fp_max or (fp_max == best_fit_fp_max and fp_min < best_fit_fp_min):
                     best_fit_fp_max = fp_max
                     best_fit_fp_min = fp_min
-                    best_fit_angle  = step * 0.5
+                    best_fit_angle  = deg
+                if early_exit:
+                    break
 
         if fits:
             best_fp_min  = best_fit_fp_min

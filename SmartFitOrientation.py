@@ -37,6 +37,8 @@ class SmartFitOrientationPlugin(Extension):
         self._do_auto_orientation = CuraApplication.getInstance().getPreferences().getValue("SmartFitOrientation/do_auto_orientation")
         # Should the volume beneath the overhangs be penalized?
         CuraApplication.getInstance().getPreferences().addPreference("SmartFitOrientation/min_volume", True)
+        # Fast fit check (5° + early exit) vs precise (0.5° full sweep). Default true = fast.
+        CuraApplication.getInstance().getPreferences().addPreference("SmartFitOrientation/fast_fit_check", True)
 
         self._popup = None
 

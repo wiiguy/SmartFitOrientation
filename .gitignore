@@ -11,6 +11,7 @@ build/
 
 # Cura / packaging
 signature.json
+*.zip
 
 # IDE / OS
 .idea/
